@@ -12,7 +12,7 @@ def get_options(args=None):
     parser.add_argument('--problem', default='motsp', help="The problem to solve, default 'tsp'")
     parser.add_argument('--graph_size', type=int, default=40, help="The size of the problem graph")
     parser.add_argument('--batch_size', type=int, default=60, help='Number of instances per batch during training')
-    parser.add_argument('--epoch_size', type=int, default=600, help='Number of instances per epoch during training')
+    parser.add_argument('--epoch_size', type=int, default=300000, help='Number of instances per epoch during training')
     parser.add_argument('--val_size', type=int, default=10,
                         help='Number of instances used for reporting validation performance')
     parser.add_argument('--val_dataset', type=str, default=None, help='Dataset file to use for validation')
@@ -61,7 +61,7 @@ def get_options(args=None):
     parser.add_argument('--log_step', type=int, default=50, help='Log info every log_step steps')
     parser.add_argument('--log_dir', default='logs_motsp', help='Directory to write TensorBoard information to')
     parser.add_argument('--run_name', default='run', help='Name to identify the run')
-    parser.add_argument('--output_dir', default='outputs_motsp', help='Directory to write output models to')
+    parser.add_argument('--output_dir', default='output_motsp', help='Directory to write output models to')
     parser.add_argument('--epoch_start', type=int, default=3,
                         help='Start at epoch # (relevant for learning rate decay)')
     parser.add_argument('--checkpoint_epochs', type=int, default=1,

@@ -22,7 +22,7 @@ import csv
 import numpy as np
 from utils import move_to
 from time import time
-
+import matplotlib.pyplot as plt
 
 
 
@@ -63,17 +63,14 @@ def run(opts):
 
     torch.manual_seed(opts.seed)
     opts.device = torch.device("cuda:0" if opts.use_cuda else "cpu")
-    #file = open("pts.csv")
-    #my_data = np.loadtxt(file, delimiter=",")
 
 
 
 
-
-    # Figure out what's the problem
     problem = load_problem(opts.problem)
-    opts.load_path = "outputs_motsp/motsp_40/motsp40_rollout_20220119T094543/epoch-4.pt"
+
     # Load data from load_path
+    opts.load_path = "output_motsp/motsp_40/motsp40_rollout_20220119T094543/epoch-4.pt"
     load_data = {}
     assert opts.load_path is None or opts.resume is None, "Only one of load path and resume can be given"
     load_path = opts.load_path if opts.load_path is not None else opts.resume
@@ -97,51 +94,42 @@ def run(opts):
         prefa = torch.from_numpy(pref).float()
         prefa = prefa.to(opts.device)
         ri = opts.graph_size
-
-        z2 = np.zeros((50,2))
+        
         set_decode_type(model, "greedy")
         model.eval()
-        filename = "kool_v1_hyp_abl_"+str(ri)+".mat"
         
-        for j in range(1):
-            z1 = np.zeros((100,4))
+        
+        
+        
+        
+        a2 = np.random.rand(1,ri,4)
+        a3 = torch.from_numpy(a2.astype(np.float32))
+
+
+        st = time()
+        o1, o2, ob3, cstr, ll = model(prefa,move_to(a3, opts.device),np.ones((100,1,1)))
+        et = time() - st
+        z1 = np.zeros((100,4))
+        for i in range(100):
+
+            z1[i,0] = o1[i].cpu().numpy()[0]
+            z1[i,1] = o2[i].cpu().numpy()[0]
             
-            file = open("test_data_iclr_csv/"+str(ri)+"/motsp"+str(ri)+"_"+str(j)+".csv")
-            my_data = np.loadtxt(file, delimiter=",")
-            a1 = np.reshape(my_data,[1,ri,5])
-            a2 = a1[:,:,:-1]
-            a3 = torch.from_numpy(a2.astype(np.float32))
-            st = time()
-            o1, o2, ob3, cstr, ll = model(prefa,move_to(a3, opts.device),np.ones((100,1,1)))
-            et = time() - st
-            #print(o1)
-            #print(o2)
+            z1[i,2] = cstr[i].cpu().numpy()[0]
 
-            for i in range(100):
+          
+        if ri == 40:
+            hyp = calc_hyp(z1[:,0:2],100,2,50)
+        else:
+            hyp = calc_hyp(z1[:,0:2],100,2,ri)
 
-                z1[i,0] = o1[i].cpu().numpy()[0]
-                z1[i,1] = o2[i].cpu().numpy()[0]
-                
-                z1[i,2] = cstr[i].cpu().numpy()[0]
+        
+        print(hyp)
 
-                #print('*********')
-                #print("ob1"+ " " + str(z1[i,0]))
-                #print("ob2"+ " " + str(z1[i,1]))
-                #print("cstr"+ " " + str(z1[i,2]))
-                #print('*********')
-            if ri == 40:
-                hyp = calc_hyp(z1[:,0:2],100,2,50)
-            else:
-                hyp = calc_hyp(z1[:,0:2],100,2,ri)
+        plt.plot(z1[:,0],z1[:,1],'o')
+        plt.show()
 
-            z2[j,0] = hyp
-            z2[j,1] = et
-            print(hyp)
-            print(et)
-            #if j == 0:
-            #    scipy.io.savemat("kool_motsp_"+str(ri)+"_0.mat", mdict={'C': z1})
-
-        #scipy.io.savemat(filename, mdict={'C2': z2})
+            
 
 
 
