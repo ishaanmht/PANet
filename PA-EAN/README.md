@@ -17,7 +17,9 @@ To run the code for  200 city MOTSP,  Go into the PANet directory  and run the f
 
 <code>python PA_net_test.py -ct 200 </code>
 
-The output will be displayed as a plot and the values of objective functions will be saved in .csv fileTo train your own network run:
+The output will be displayed as a plot and the values of objective functions.
+
+To train your own network run:
 
 <code> python PA_net_train.py </code>
 
