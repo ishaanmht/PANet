@@ -1,6 +1,6 @@
 ## PA-AT
 
-<p> The Repositry presents PA-EAN Architecture. PA-AT uses the architecture of network presented in [1]. 
+<p> The Repositry presents PA-AT Architecture. PA-AT uses the architecture of network presented in [1]. 
 The code of PA-Net is modified version of the code by Kool et. el [1]. The github link to their work can be found [here](https://github.com/wouterkool/attention-learn-to-route/).</p> 
 
 
